@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Pesquisa com Favoritos</title>
+  <style>
+    :root {
+      --cor-primaria: #4a90e2;
+      --cor-secundaria: #f5f7fa;
+      --cor-favorito: #ffe082;
+      --borda: #ddd;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: var(--cor-secundaria);
+      display: flex;
+      justify-content: center;
+    }
+
+    .container {
+      max-width: 700px;
+      padding: 20px;
+      width: 100%;
+    }
+
+    h1, h2 {
+      color: var(--cor-primaria);
+    }
+
+    .controls {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    input, select {
+      padding: 10px;
+      border-radius: 6px;
+      border: 1px solid var(--borda);
+      width: 100%;
+      max-width: 300px;
+    }
+
+    .item {
+      background-color: white;
+      border: 1px solid var(--borda);
+      padding: 15px;
+      margin-bottom: 10px;
+      border-radius: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: transform 0.2s;
+    }
+
+    .item:hover {
+      transform: scale(1.02);
+    }
+
+    .favorito {
+      background-color: var(--cor-favorito);
+    }
+
+    button {
+      background-color: var(--cor-primaria);
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+
+    button:hover {
+      background-color: #357ab8;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>Pesquisa de Conteúdo</h1>
+
+    <div class="controls">
+      <input type="text" id="campoPesquisa" placeholder="Digite para pesquisar..." oninput="filtrar()"/>
+      <select id="filtroCategoria" onchange="filtrar()">
+        <option value="todas">Todas as categorias</option>
+        <option value="programacao">Programação</option>
+        <option value="design">Design</option>
+        <option value="marketing">Marketing</option>
+      </select>
+    </div>
+
+    <div id="resultados"></div>
+
+    <h2>Favoritos</h2>
+    <div id="favoritos"></div>
+  </div>
+
+  <script>
+    const resultados = [
+      { id: 1, titulo: "Curso de HTML", categoria: "programacao" },
+      { id: 2, titulo: "Aprenda JavaScript", categoria: "programacao" },
+      { id: 3, titulo: "Design Responsivo", categoria: "design" },
+      { id: 4, titulo: "Fundamentos de Marketing", categoria: "marketing" },
+      { id: 5, titulo: "CSS Avançado", categoria: "design" },
+      { id: 6, titulo: "Java com Spring Boot", categoria: "programacao" },
+    ];
+
+    const favoritos = [];
+
+    function filtrar() {
+      const termo = document.getElementById("campoPesquisa").value.toLowerCase();
+      const categoria = document.getElementById("filtroCategoria").value;
+
+      const filtrados = resultados.filter(item => {
+        const correspondeTexto = item.titulo.toLowerCase().includes(termo);
+        const correspondeCategoria = categoria === "todas" || item.categoria === categoria;
+        return correspondeTexto && correspondeCategoria;
+      });
+
+      renderResultados(filtrados);
+    }
+
+    function renderResultados(lista) {
+      const container = document.getElementById("resultados");
+      container.innerHTML = "";
+
+      lista.forEach(item => {
+        const div = document.createElement("div");
+        div.className = "item";
+        div.innerHTML = `
+          <span>${item.titulo}</span>
+          <button onclick="adicionarFavorito(${item.id})">Favoritar</button>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function renderFavoritos() {
+      const container = document.getElementById("favoritos");
+      container.innerHTML = "";
+
+      favoritos.forEach(item => {
+        const div = document.createElement("div");
+        div.className = "item favorito";
+        div.innerHTML = `<span>${item.titulo}</span>`;
+        container.appendChild(div);
+      });
+    }
+
+    function adicionarFavorito(id) {
+      const item = resultados.find(r => r.id === id);
+      if (item && !favoritos.find(f => f.id === id)) {
+        favoritos.push(item);
+        renderFavoritos();
+      }
+    }
+
+    // Inicializa com todos os resultados
+    renderResultados(resultados);
+  </script>
+
+</body>
+</html>

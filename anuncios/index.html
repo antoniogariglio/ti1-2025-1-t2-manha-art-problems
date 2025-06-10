@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Formulário de Anúncio</title>
+  <style>
+    :root {
+      --primary-color: #4361ee;
+      --secondary-color: #3f37c9;
+      --accent-color: #4895ef;
+      --success-color: #4cc9f0;
+      --warning-color: #f8961e;
+      --danger-color: #f94144;
+      --light-color: #f8f9fa;
+      --dark-color: #212529;
+      --gray-color: #6c757d;
+    }
+    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      line-height: 1.6;
+      background-color: #f5f7fa;
+      color: var(--dark-color);
+      padding: 0;
+      margin: 0;
+    }
+    
+    .container {
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 30px;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    }
+    
+    h1 {
+      color: var(--primary-color);
+      text-align: center;
+      margin-bottom: 30px;
+      font-size: 2.2rem;
+      font-weight: 600;
+    }
+    
+    .form-group {
+      margin-bottom: 25px;
+    }
+    
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+      color: var(--dark-color);
+      font-size: 1rem;
+    }
+    
+    input[type="text"],
+    input[type="file"],
+    select,
+    textarea {
+      width: 100%;
+      padding: 12px 15px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      background-color: white;
+    }
+    
+    input[type="text"]:focus,
+    input[type="file"]:focus,
+    select:focus,
+    textarea:focus {
+      border-color: var(--accent-color);
+      box-shadow: 0 0 0 3px rgba(72, 149, 239, 0.2);
+      outline: none;
+    }
+    
+    textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+    
+    .destaque-container {
+      display: flex;
+      align-items: center;
+      margin: 20px 0;
+      padding: 15px;
+      background-color: #f8f9fa;
+      border-radius: 8px;
+    }
+    
+    .destaque-container input[type="checkbox"] {
+      width: 20px;
+      height: 20px;
+      margin-right: 12px;
+      accent-color: var(--primary-color);
+    }
+    
+    .destaque-container label {
+      margin: 0;
+      font-weight: 400;
+      display: flex;
+      align-items: center;
+      flex-grow: 1;
+    }
+    
+    .info-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 20px;
+      height: 20px;
+      margin-left: 8px;
+      background-color: var(--gray-color);
+      color: white;
+      border-radius: 50%;
+      font-size: 12px;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+    
+    .info-link:hover {
+      background-color: var(--primary-color);
+      transform: scale(1.1);
+    }
+    
+    .btn-group {
+      display: flex;
+      gap: 15px;
+      margin-top: 30px;
+    }
+    
+    button {
+      flex: 1;
+      padding: 14px;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .btn-publicar {
+      background-color: var(--primary-color);
+      color: white;
+    }
+    
+    .btn-publicar:hover {
+      background-color: var(--secondary-color);
+      transform: translateY(-2px);
+    }
+    
+    .btn-salvar {
+      background-color: white;
+      color: var(--primary-color);
+      border: 1px solid var(--primary-color);
+    }
+    
+    .btn-salvar:hover {
+      background-color: #f0f4ff;
+      transform: translateY(-2px);
+    }
+    
+    #status-message {
+      margin-top: 25px;
+      padding: 15px;
+      border-radius: 8px;
+      display: none;
+      font-weight: 500;
+    }
+    
+    .success {
+      background-color: #e6f7ee;
+      color: #0a5c36;
+      border-left: 4px solid #0a5c36;
+    }
+    
+    .error {
+      background-color: #fde8e8;
+      color: #9b1c1c;
+      border-left: 4px solid #9b1c1c;
+    }
+    
+    /* Efeito de loading nos botões */
+    button.loading {
+      position: relative;
+      color: transparent;
+    }
+    
+    button.loading::after {
+      content: "";
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      margin: auto;
+      border: 3px solid transparent;
+      border-top-color: white;
+      border-radius: 50%;
+      animation: button-loading-spinner 1s linear infinite;
+    }
+    
+    @keyframes button-loading-spinner {
+      from { transform: rotate(0turn); }
+      to { transform: rotate(1turn); }
+    }
+    
+    /* Responsividade */
+    @media (max-width: 768px) {
+      .container {
+        margin: 20px;
+        padding: 20px;
+      }
+      
+      .btn-group {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Formulário de Anúncio</h1>
+
+    <form id="formAnuncio">
+      <!-- 1. Título -->
+      <div class="form-group">
+        <label for="titulo">Título do anúncio</label>
+        <input type="text" id="titulo" name="titulo" placeholder="Ex: Fotógrafo profissional para eventos" required>
+      </div>
+
+      <!-- 2. Categoria e Subcategoria -->
+      <div class="form-group">
+        <label for="categoria">Categoria</label>
+        <select id="categoria" name="categoria" required>
+          <option value="">Selecione uma categoria</option>
+          <option value="Artes Visuais">Artes Visuais</option>
+          <option value="Audiovisual">Audiovisual</option>
+          <option value="Artes Performáticas">Artes Performáticas</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="subcategoria">Subcategoria</label>
+        <select id="subcategoria" name="subcategoria" required>
+          <option value="">Primeiro selecione uma categoria</option>
+        </select>
+      </div>
+
+      <!-- 3. Descrição -->
+      <div class="form-group">
+        <label for="descricao">Descrição detalhada</label>
+        <textarea id="descricao" name="descricao" rows="4" placeholder="Descreva seu serviço com detalhes..." required></textarea>
+      </div>
+
+      <!-- 4. Fotos -->
+      <div class="form-group">
+        <label for="fotos">Fotos do serviço (máx. 6)</label>
+        <input type="file" id="fotos" name="fotos" multiple accept="image/*">
+      </div>
+
+      <!-- 5. Duração -->
+      <div class="form-group">
+        <label for="duracao">Duração do anúncio</label>
+        <select id="duracao" name="duracao" required>
+          <option value="7">7 dias</option>
+          <option value="14">14 dias</option>
+          <option value="30">30 dias</option>
+        </select>
+      </div>
+
+      <!-- 6. Destaque -->
+      <div class="destaque-container">
+        <input type="checkbox" id="destaque" name="destaque">
+        <label for="destaque">
+          Deseja destacar o anúncio? (R$ 10,00)
+          <a href="#" class="info-link" title="Clique para mais informações" onclick="alert('O destaque coloca seu anúncio em posição privilegiada nos resultados de busca, aumentando significativamente sua visibilidade.'); return false;">?</a>
+        </label>
+      </div>
+
+      <!-- Botões -->
+      <div class="btn-group">
+        <button type="submit" class="btn-publicar">Publicar anúncio</button>
+        <button type="button" class="btn-salvar" id="btnSalvar">Salvar como rascunho</button>
+      </div>
+    </form>
+
+    <div id="status-message"></div>
+  </div>
+
+  <script>
+    // Dados em formato JSON para subcategorias
+    const categoriasJSON = {
+      "Artes Visuais": [
+        "Artista Digital", "Pintor", "Escultor", "Ilustrador", "Tatuador",
+        "Gravurista", "Quadrinista", "Artista de Rua"
+      ],
+      "Audiovisual": [
+        "Fotógrafo", "Videomaker", "Editor de Vídeo", "Diretor de Fotografia",
+        "Técnico de Som", "Produtor Audiovisual"
+      ],
+      "Artes Performáticas": [
+        "Ator", "Bailarino", "Músico", "Compositor", "DJ", "Artista Circense"
+      ]
+    };
+
+    // Preenche subcategorias baseado na categoria selecionada
+    document.getElementById('categoria').addEventListener('change', function() {
+      const categoria = this.value;
+      const subcategoriaSelect = document.getElementById('subcategoria');
+      
+      subcategoriaSelect.innerHTML = '<option value="">Selecione uma subcategoria</option>';
+      
+      if (categoria && categoriasJSON[categoria]) {
+        categoriasJSON[categoria].forEach(opcao => {
+          subcategoriaSelect.innerHTML += `<option value="${opcao}">${opcao}</option>`;
+        });
+      }
+    });
+
+    // Armazena anúncios em JSON
+    let anuncios = JSON.parse(localStorage.getItem('anuncios')) || [];
+
+    // Envia dados para o sistema de filtros
+    function enviarParaFiltros(anuncio) {
+      // Mostrar loading no botão
+      const btn = document.querySelector('.btn-publicar');
+      btn.classList.add('loading');
+      btn.disabled = true;
+      
+      // Simular envio assíncrono
+      setTimeout(() => {
+        // Método 1: Evento customizado (se estiver na mesma página)
+        document.dispatchEvent(new CustomEvent('novo-anuncio', {
+          detail: anuncio
+        }));
+        
+        // Método 2: postMessage (se estiver em iframe/popup)
+        if (window.parent !== window) {
+          window.parent.postMessage({
+            type: 'novo-anuncio',
+            data: anuncio
+          }, '*');
+        }
+        
+        // Método 3: Armazenamento local (fallback)
+        anuncios.push(anuncio);
+        localStorage.setItem('anuncios', JSON.stringify(anuncios));
+        
+        mostrarStatus('Anúncio publicado com sucesso!', 'success');
+        
+        // Remover loading
+        btn.classList.remove('loading');
+        btn.disabled = false;
+        btn.textContent = 'Publicar anúncio';
+        
+        // Limpa o formulário
+        document.getElementById('formAnuncio').reset();
+        document.getElementById('subcategoria').innerHTML = '<option value="">Selecione uma subcategoria</option>';
+      }, 1500);
+    }
+
+    // Mostra mensagem de status
+    function mostrarStatus(mensagem, tipo) {
+      const statusDiv = document.getElementById('status-message');
+      statusDiv.textContent = mensagem;
+      statusDiv.className = tipo;
+      statusDiv.style.display = 'block';
+      
+      setTimeout(() => {
+        statusDiv.style.display = 'none';
+      }, 5000);
+    }
+
+    // Formata os dados do formulário para JSON
+    document.getElementById('formAnuncio').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const formData = {
+        id: Date.now(), // ID único
+        titulo: document.getElementById('titulo').value,
+        categoria: document.getElementById('categoria').value,
+        subcategoria: document.getElementById('subcategoria').value,
+        descricao: document.getElementById('descricao').value,
+        duracao: document.getElementById('duracao').value,
+        destaque: document.getElementById('destaque').checked,
+        dataPublicacao: new Date().toISOString(),
+        tags: [
+          document.getElementById('categoria').value,
+          document.getElementById('subcategoria').value
+        ]
+      };
+      
+      enviarParaFiltros(formData);
+    });
+
+    // Botão de salvar rascunho
+    document.getElementById('btnSalvar').addEventListener('click', function() {
+      const btn = this;
+      btn.classList.add('loading');
+      btn.disabled = true;
+      btn.textContent = '';
+      
+      setTimeout(() => {
+        // Similar ao submit, mas com status de rascunho
+        const formData = {
+          id: Date.now(),
+          titulo: document.getElementById('titulo').value,
+          categoria: document.getElementById('categoria').value,
+          subcategoria: document.getElementById('subcategoria').value,
+          descricao: document.getElementById('descricao').value,
+          duracao: document.getElementById('duracao').value,
+          destaque: document.getElementById('destaque').checked,
+          dataPublicacao: new Date().toISOString(),
+          status: 'rascunho',
+          tags: [
+            document.getElementById('categoria').value,
+            document.getElementById('subcategoria').value
+          ]
+        };
+        
+        anuncios.push(formData);
+        localStorage.setItem('anuncios', JSON.stringify(anuncios));
+        mostrarStatus('Rascunho salvo com sucesso!', 'success');
+        
+        btn.classList.remove('loading');
+        btn.disabled = false;
+        btn.textContent = 'Salvar como rascunho';
+      }, 1000);
+    });
+  </script>
+</body>
+</html> 

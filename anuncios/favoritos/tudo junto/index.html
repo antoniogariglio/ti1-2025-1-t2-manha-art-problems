@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sistema de Anúncios</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sistema de Anúncios</title>
+  <style>
+    :root {
+  --primary-color: #4361ee;
+  --secondary-color: #3f37c9;
+  --accent-color: #4895ef;
+  --success-color: #4cc9f0;
+  --warning-color: #f8961e;
+  --danger-color: #f94144;
+  --light-color: #f8f9fa;
+  --dark-color: #212529;
+  --gray-color: #6c757d;
+  --cor-favorito: #ffe082;
+  --borda: #ddd;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  line-height: 1.6;
+  background-color: #f9f9fb;
+  color: #212529;
+  padding: 0;
+  margin: 0;
+}
+
+/* Estilos para navegação entre seções */
+.nav-container {
+  background: linear-gradient(to right, #4361ee, #4895ef) !important;
+  padding: 15px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.nav-links {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.nav-links a {
+  color: white;
+  text-decoration: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  transition: background-color 0.3s;
+}
+
+.nav-links a:hover {
+  background-color: var(--secondary-color);
+}
+
+/* Estilos comuns para todas as seções */
+section {
+  padding: 40px 20px;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+section h1 {
+  color: var(--primary-color);
+  text-align: center;
+  margin-bottom: 30px;
+  font-size: 2.2rem;
+  font-weight: 600;
+}
+
+/* Estilos para blocos principais (formulário, anúncios, resultados, etc) */
+.form-container,
+.anuncio,
+.item,
+#resultados,
+#favoritos-pesquisa,
+#listaAnuncios,
+#listaFavoritos {
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+/* Estilos específicos do formulário */
+.form-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 30px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.form-group {
+  margin-bottom: 25px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: var(--dark-color);
+  font-size: 1rem;
+}
+
+.form-group input[type="text"],
+.form-group input[type="file"],
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 12px 15px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  background-color: white;
+}
+
+.form-group input[type="text"]:focus,
+.form-group input[type="file"]:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 3px rgba(72, 149, 239, 0.2);
+  outline: none;
+}
+
+.form-group textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+.destaque-container {
+  display: flex;
+  align-items: center;
+  margin: 20px 0;
+  padding: 15px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+}
+
+.destaque-container input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  margin-right: 12px;
+  accent-color: var(--primary-color);
+}
+
+.destaque-container label {
+  margin: 0;
+  font-weight: 400;
+  display: flex;
+  align-items: center;
+  flex-grow: 1;
+}
+
+.info-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  margin-left: 8px;
+  background-color: var(--gray-color);
+  color: white;
+  border-radius: 50%;
+  font-size: 12px;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.info-link:hover {
+  background-color: var(--primary-color);
+  transform: scale(1.1);
+}
+
+.btn-group {
+  display: flex;
+  gap: 15px;
+  margin-top: 30px;
+}
+
+.btn-group button {
+  flex: 1;
+  padding: 14px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+/* Botões estilo atualizado */
+button,
+.controls button,
+.btn-group button {
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+button:hover {
+  background-color: var(--secondary-color);
+  transform: scale(1.02);
+}
+
+.btn-publicar {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.btn-publicar:hover {
+  background-color: var(--secondary-color);
+  transform: translateY(-2px);
+}
+
+.btn-salvar {
+  background-color: white;
+  color: var(--primary-color);
+  border: 1px solid var(--primary-color);
+}
+
+.btn-salvar:hover {
+  background-color: #f0f4ff;
+  transform: translateY(-2px);
+}
+
+/* Mensagem de status */
+#status-message {
+  margin-top: 25px;
+  padding: 15px;
+  border-radius: 8px;
+  display: none;
+  font-weight: 500;
+}
+
+.success {
+  background-color: #e6f7ee;
+  color: #0a5c36;
+  border-left: 4px solid #0a5c36;
+}
+
+.error {
+  background-color: #fde8e8;
+  color: #9b1c1c;
+  border-left: 4px solid #9b1c1c;
+}
+
+/* Efeito loading nos botões */
+button.loading {
+  position: relative;
+  color: transparent;
+}
+
+button.loading::after {
+  content: "";
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: auto;
+  border: 3px solid transparent;
+  border-top-color: white;
+  border-radius: 50%;
+  animation: button-loading-spinner 1s linear infinite;
+}
+
+@keyframes button-loading-spinner {
+  from { transform: rotate(0turn); }
+  to { transform: rotate(1turn); }
+}
+
+/* Estilos para a lista de anúncios */
+.anuncio {
+  background: white;
+  padding: 20px;
+  margin-bottom: 15px;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  position: relative;
+}
+
+.anuncio.destaque {
+  border-left: 6px solid var(--warning-color);
+}
+
+.anuncio .categoria {
+  font-size: 0.9em;
+  color: #666;
+}
+
+.nav-anuncios {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.nav-anuncios a {
+  padding: 8px 15px;
+  text-decoration: none;
+  background: #4CAF50;
+  color: white;
+  border-radius: 5px;
+}
+
+.nav-anuncios a.active {
+  background: #2E7D32;
+}
+
+.favorito-btn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: none;
+  border: none;
+  font-size: 1.5em;
+  cursor: pointer;
+}
+
+.favoritado {
+  color: gold;
+}
+
+.tab {
+  display: none;
+}
+
+.tab.active {
+  display: block;
+}
+
+/* Estilos para a pesquisa */
+.controls {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.controls input, 
+.controls select {
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid var(--borda);
+  width: 100%;
+  max-width: 300px;
+}
+
+.item {
+      background-color: white;
+      border: 1px solid var(--borda);
+      padding: 15px;
+      margin-bottom: 10px;
+      border-radius: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: transform 0.2s;
+    }
+    
+    .item:hover {
+      transform: scale(1.02);
+    }
+    
+    .favorito {
+      background-color: var(--cor-favorito);
+    }
+    
+    .controls button {
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+    
+    .controls button:hover {
+      background-color: #357ab8;
+    }
+    
+    /* Responsividade */
+    @media (max-width: 768px) {
+      .form-container {
+        margin: 20px;
+        padding: 20px;
+      }
+      
+      .btn-group {
+        flex-direction: column;
+      }
+      
+      .nav-links {
+        flex-direction: column;
+        gap: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navegação entre seções -->
+  <div class="nav-container">
+    <div class="nav-links">
+      <a href="#inicio">Início</a>
+      <a href="#formulario">Criar Anúncio</a>
+      <a href="#lista">Lista de Anúncios</a>
+      <a href="#pesquisa">Pesquisa</a>
+    </div>
+  </div>
+
+  <!-- Seção Inicial -->
+  <section id="inicio">
+    <h1>Bem-vindo ao Sistema de Anúncios</h1>
+    <p style="text-align: center;">Navegue pelas seções usando o menu acima para criar, visualizar ou pesquisar anúncios.</p>
+  </section>
+
+  <!-- Seção do Formulário -->
+  <section id="formulario">
+    <div class="form-container">
+      <h1>Formulário de Anúncio</h1>
+
+      <form id="formAnuncio">
+        <!-- 1. Título -->
+        <div class="form-group">
+          <label for="titulo">Título do anúncio</label>
+          <input type="text" id="titulo" name="titulo" placeholder="Ex: Fotógrafo profissional para eventos" required>
+        </div>
+
+        <!-- 2. Categoria e Subcategoria -->
+        <div class="form-group">
+          <label for="categoria">Categoria</label>
+          <select id="categoria" name="categoria" required>
+            <option value="">Selecione uma categoria</option>
+            <option value="Artes Visuais">Artes Visuais</option>
+            <option value="Audiovisual">Audiovisual</option>
+            <option value="Artes Performáticas">Artes Performáticas</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="subcategoria">Subcategoria</label>
+          <select id="subcategoria" name="subcategoria" required>
+            <option value="">Primeiro selecione uma categoria</option>
+          </select>
+        </div>
+
+        <!-- 3. Descrição -->
+        <div class="form-group">
+          <label for="descricao">Descrição detalhada</label>
+          <textarea id="descricao" name="descricao" rows="4" placeholder="Descreva seu serviço com detalhes..." required></textarea>
+        </div>
+
+        <!-- 4. Fotos -->
+        <div class="form-group">
+          <label for="fotos">Fotos do serviço (máx. 6)</label>
+          <input type="file" id="fotos" name="fotos" multiple accept="image/*">
+        </div>
+
+        <!-- 5. Duração -->
+        <div class="form-group">
+          <label for="duracao">Duração do anúncio</label>
+          <select id="duracao" name="duracao" required>
+            <option value="7">7 dias</option>
+            <option value="14">14 dias</option>
+            <option value="30">30 dias</option>
+          </select>
+        </div>
+
+        <!-- 6. Destaque -->
+        <div class="destaque-container">
+          <input type="checkbox" id="destaque" name="destaque">
+          <label for="destaque">
+            Deseja destacar o anúncio? (R$ 10,00)
+            <a href="#" class="info-link" title="Clique para mais informações" onclick="alert('O destaque coloca seu anúncio em posição privilegiada nos resultados de busca, aumentando significativamente sua visibilidade.'); return false;">?</a>
+          </label>
+        </div>
+
+        <!-- Botões -->
+        <div class="btn-group">
+          <button type="submit" class="btn-publicar">Publicar anúncio</button>
+          <button type="button" class="btn-salvar" id="btnSalvar">Salvar como rascunho</button>
+        </div>
+      </form>
+
+      <div id="status-message"></div>
+    </div>
+  </section>
+
+  <!-- Seção da Lista de Anúncios -->
+  <section id="lista">
+    <h1>Lista de Anúncios</h1>
+    
+    <div class="nav-anuncios">
+      <a href="#" class="active" onclick="mostrarTab('todos'); return false;">Todos</a>
+      <a href="#" onclick="mostrarTab('favoritos'); return false;">Favoritos</a>
+    </div>
+
+    <div id="todos" class="tab active">
+      <div id="listaAnuncios"></div>
+    </div>
+
+    <div id="favoritos" class="tab">
+      <div id="listaFavoritos"></div>
+    </div>
+  </section>
+
+  <!-- Seção de Pesquisa -->
+  <section id="pesquisa">
+    <h1>Pesquisa de Conteúdo</h1>
+
+    <div class="controls">
+      <input type="text" id="campoPesquisa" placeholder="Digite para pesquisar..." oninput="filtrar()"/>
+      <select id="filtroCategoria" onchange="filtrar()">
+        <option value="todas">Todas as categorias</option>
+        <option value="Artes Visuais">Artes Visuais</option>
+        <option value="Audiovisual">Audiovisual</option>
+        <option value="Artes Performáticas">Artes Performáticas</option>
+      </select>
+    </div>
+
+    <div id="resultados"></div>
+
+    <h2>Favoritos</h2>
+    <div id="favoritos-pesquisa"></div>
+  </section>
+
+  <script>
+    // ========== Scripts para o Formulário ==========
+    // Dados em formato JSON para subcategorias
+    const categoriasJSON = {
+      "Artes Visuais": [
+        "Artista Digital", "Pintor", "Escultor", "Ilustrador", "Tatuador",
+        "Gravurista", "Quadrinista", "Artista de Rua"
+      ],
+      "Audiovisual": [
+        "Fotógrafo", "Videomaker", "Editor de Vídeo", "Diretor de Fotografia",
+        "Técnico de Som", "Produtor Audiovisual"
+      ],
+      "Artes Performáticas": [
+        "Ator", "Bailarino", "Músico", "Compositor", "DJ", "Artista Circense"
+      ]
+    };
+
+    // Preenche subcategorias baseado na categoria selecionada
+    document.getElementById('categoria').addEventListener('change', function() {
+      const categoria = this.value;
+      const subcategoriaSelect = document.getElementById('subcategoria');
+      
+      subcategoriaSelect.innerHTML = '<option value="">Selecione uma subcategoria</option>';
+      
+      if (categoria && categoriasJSON[categoria]) {
+        categoriasJSON[categoria].forEach(opcao => {
+          subcategoriaSelect.innerHTML += `<option value="${opcao}">${opcao}</option>`;
+        });
+      }
+    });
+
+    // Armazena anúncios em JSON
+    let anuncios = JSON.parse(localStorage.getItem('anuncios')) || [];
+    let favoritos = JSON.parse(localStorage.getItem('favoritos')) || [];
+
+    // Envia dados para o sistema de filtros
+    function enviarParaFiltros(anuncio) {
+      // Mostrar loading no botão
+      const btn = document.querySelector('.btn-publicar');
+      btn.classList.add('loading');
+      btn.disabled = true;
+      
+      // Simular envio assíncrono
+      setTimeout(() => {
+        // Método 1: Evento customizado (se estiver na mesma página)
+        document.dispatchEvent(new CustomEvent('novo-anuncio', {
+          detail: anuncio
+        }));
+        
+        // Armazenamento local
+        anuncio.status = 'publicado';
+        anuncios.push(anuncio);
+        localStorage.setItem('anuncios', JSON.stringify(anuncios));
+        
+        mostrarStatus('Anúncio publicado com sucesso!', 'success');
+        
+        // Remover loading
+        btn.classList.remove('loading');
+        btn.disabled = false;
+        btn.textContent = 'Publicar anúncio';
+        
+        // Limpa o formulário
+        document.getElementById('formAnuncio').reset();
+        document.getElementById('subcategoria').innerHTML = '<option value="">Selecione uma subcategoria</option>';
+        
+        // Atualiza a lista de anúncios
+        carregarAnuncios();
+      }, 1500);
+    }
+
+    // Mostra mensagem de status
+    function mostrarStatus(mensagem, tipo) {
+      const statusDiv = document.getElementById('status-message');
+      statusDiv.textContent = mensagem;
+      statusDiv.className = tipo;
+      statusDiv.style.display = 'block';
+      
+      setTimeout(() => {
+        statusDiv.style.display = 'none';
+      }, 5000);
+    }
+
+    // Formata os dados do formulário para JSON
+    document.getElementById('formAnuncio').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const formData = {
+        id: Date.now(), // ID único
+        titulo: document.getElementById('titulo').value,
+        categoria: document.getElementById('categoria').value,
+        subcategoria: document.getElementById('subcategoria').value,
+        descricao: document.getElementById('descricao').value,
+        duracao: document.getElementById('duracao').value,
+        destaque: document.getElementById('destaque').checked,
+        dataPublicacao: new Date().toISOString(),
+        tags: [
+          document.getElementById('categoria').value,
+          document.getElementById('subcategoria').value
+        ]
+      };
+      
+      enviarParaFiltros(formData);
+    });
+
+    // Botão de salvar rascunho
+    document.getElementById('btnSalvar').addEventListener('click', function() {
+      const btn = this;
+      btn.classList.add('loading');
+      btn.disabled = true;
+      btn.textContent = '';
+      
+      setTimeout(() => {
+        // Similar ao submit, mas com status de rascunho
+        const formData = {
+          id: Date.now(),
+          titulo: document.getElementById('titulo').value,
+          categoria: document.getElementById('categoria').value,
+          subcategoria: document.getElementById('subcategoria').value,
+          descricao: document.getElementById('descricao').value,
+          duracao: document.getElementById('duracao').value,
+          destaque: document.getElementById('destaque').checked,
+          dataPublicacao: new Date().toISOString(),
+          status: 'rascunho',
+          tags: [
+            document.getElementById('categoria').value,
+            document.getElementById('subcategoria').value
+          ]
+        };
+        
+        anuncios.push(formData);
+        localStorage.setItem('anuncios', JSON.stringify(anuncios));
+        mostrarStatus('Rascunho salvo com sucesso!', 'success');
+        
+        btn.classList.remove('loading');
+        btn.disabled = false;
+        btn.textContent = 'Salvar como rascunho';
+      }, 1000);
+    });
+
+    // ========== Scripts para a Lista de Anúncios ==========
+    // Mostra os anúncios normais
+    function carregarAnuncios() {
+      const container = document.getElementById('listaAnuncios');
+      container.innerHTML = '';
+
+      if (anuncios.length === 0) {
+        container.innerHTML = '<p>Nenhum anúncio publicado ainda.</p>';
+        return;
+      }
+
+      anuncios.forEach((anuncio, index) => {
+        if (anuncio.status !== 'publicado') return;
+
+        const isFavorito = favoritos.some(f => f.id === anuncio.id);
+        
+        const div = document.createElement('div');
+        div.className = 'anuncio' + (anuncio.destaque ? ' destaque' : '');
+        div.innerHTML = `
+          <h2>${anuncio.titulo}</h2>
+          <div class="categoria">${anuncio.categoria} > ${anuncio.subcategoria}</div>
+          <p>${anuncio.descricao}</p>
+          <small>Publicado em: ${new Date(anuncio.dataPublicacao).toLocaleDateString()}</small>
+          <button class="favorito-btn ${isFavorito ? 'favoritado' : ''}" onclick="toggleFavorito(${index})">★</button>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    // Mostra os favoritos
+    function carregarFavoritos() {
+      const container = document.getElementById('listaFavoritos');
+      container.innerHTML = '';
+
+      if (favoritos.length === 0) {
+        container.innerHTML = '<p>Nenhum anúncio favoritado ainda.</p>';
+        return;
+      }
+
+      favoritos.forEach(anuncio => {
+        const div = document.createElement('div');
+        div.className = 'anuncio' + (anuncio.destaque ? ' destaque' : '');
+        div.innerHTML = `
+          <h2>${anuncio.titulo}</h2>
+          <div class="categoria">${anuncio.categoria} > ${anuncio.subcategoria}</div>
+          <p>${anuncio.descricao}</p>
+          <small>Publicado em: ${new Date(anuncio.dataPublicacao).toLocaleDateString()}</small>
+          <button class="favorito-btn favoritado" onclick="removerFavorito(${anuncio.id})">★</button>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    // Alterna entre tabs
+    function mostrarTab(tabId) {
+      document.querySelectorAll('.tab').forEach(tab => {
+        tab.classList.remove('active');
+      });
+      document.querySelectorAll('.nav-anuncios a').forEach(a => {
+        a.classList.remove('active');
+      });
+      
+      document.getElementById(tabId).classList.add('active');
+      document.querySelector(`.nav-anuncios a[onclick="mostrarTab('${tabId}')"]`).classList.add('active');
+      
+      if (tabId === 'favoritos') {
+        carregarFavoritos();
+      } else {
+        carregarAnuncios();
+      }
+    }
+
+    // Adiciona/remove favoritos
+    function toggleFavorito(index) {
+      const anuncio = anuncios[index];
+      
+      const favoritoIndex = favoritos.findIndex(f => f.id === anuncio.id);
+      
+      if (favoritoIndex === -1) {
+        // Adiciona aos favoritos
+        favoritos.push(anuncio);
+      } else {
+        // Remove dos favoritos
+        favoritos.splice(favoritoIndex, 1);
+      }
+      
+      localStorage.setItem('favoritos', JSON.stringify(favoritos));
+      carregarAnuncios();
+      
+      if (document.getElementById('favoritos').classList.contains('active')) {
+        carregarFavoritos();
+      }
+    }
+
+    // Remove favorito diretamente da lista de favoritos
+    function removerFavorito(id) {
+      favoritos = favoritos.filter(f => f.id !== id);
+      localStorage.setItem('favoritos', JSON.stringify(favoritos));
+      carregarFavoritos();
+      carregarAnuncios();
+    }
+
+    // ========== Scripts para a Pesquisa ==========
+    function filtrar() {
+      const termo = document.getElementById("campoPesquisa").value.toLowerCase();
+      const categoria = document.getElementById("filtroCategoria").value;
+
+      const filtrados = anuncios.filter(anuncio => {
+        if (anuncio.status !== 'publicado') return false;
+        
+        const correspondeTexto = anuncio.titulo.toLowerCase().includes(termo) || 
+                               anuncio.descricao.toLowerCase().includes(termo);
+        const correspondeCategoria = categoria === "todas" || anuncio.categoria === categoria;
+        return correspondeTexto && correspondeCategoria;
+      });
+
+      renderResultados(filtrados);
+    }
+
+    function renderResultados(lista) {
+      const container = document.getElementById("resultados");
+      container.innerHTML = "";
+
+      if (lista.length === 0) {
+        container.innerHTML = '<p>Nenhum anúncio encontrado.</p>';
+        return;
+      }
+
+      lista.forEach(anuncio => {
+        const isFavorito = favoritos.some(f => f.id === anuncio.id);
+        
+        const div = document.createElement("div");
+        div.className = "item";
+        div.innerHTML = `
+          <div>
+            <h3>${anuncio.titulo}</h3>
+            <div class="categoria">${anuncio.categoria} > ${anuncio.subcategoria}</div>
+            <p>${anuncio.descricao}</p>
+          </div>
+          <button onclick="${isFavorito ? `removerFavorito(${anuncio.id})` : `adicionarFavorito(${anuncio.id})`}">
+            ${isFavorito ? 'Remover Favorito' : 'Adicionar Favorito'}
+          </button>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function renderFavoritosPesquisa() {
+      const container = document.getElementById("favoritos-pesquisa");
+      container.innerHTML = "";
+
+      if (favoritos.length === 0) {
+        container.innerHTML = '<p>Nenhum anúncio favoritado ainda.</p>';
+        return;
+      }
+
+      favoritos.forEach(anuncio => {
+        const div = document.createElement("div");
+        div.className = "item favorito";
+        div.innerHTML = `
+          <div>
+            <h3>${anuncio.titulo}</h3>
+            <div class="categoria">${anuncio.categoria} > ${anuncio.subcategoria}</div>
+            <p>${anuncio.descricao}</p>
+          </div>
+          <button onclick="removerFavorito(${anuncio.id})">Remover Favorito</button>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function adicionarFavorito(id) {
+      const anuncio = anuncios.find(a => a.id === id);
+      if (anuncio && !favoritos.find(f => f.id === id)) {
+        favoritos.push(anuncio);
+        localStorage.setItem('favoritos', JSON.stringify(favoritos));
+        renderFavoritosPesquisa();
+        filtrar();
+        carregarAnuncios();
+      }
+    }
+
+    // Inicialização
+    document.addEventListener('DOMContentLoaded', function() {
+      carregarAnuncios();
+      filtrar();
+      renderFavoritosPesquisa();
+    });
+  </script>
+</body>
+</html>

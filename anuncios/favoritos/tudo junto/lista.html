@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Lista de Anúncios</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background-color: #f0f0f0;
+    }
+    .anuncio {
+      background: white;
+      padding: 20px;
+      margin-bottom: 15px;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      position: relative;
+    }
+    .destaque {
+      border-left: 6px solid #f8961e;
+    }
+    h1 {
+      margin-bottom: 20px;
+    }
+    h2 {
+      margin-bottom: 5px;
+    }
+    .categoria {
+      font-size: 0.9em;
+      color: #666;
+    }
+    .nav {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+    .nav a {
+      padding: 8px 15px;
+      text-decoration: none;
+      background: #4CAF50;
+      color: white;
+      border-radius: 5px;
+    }
+    .nav a.active {
+      background: #2E7D32;
+    }
+    .favorito-btn {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: none;
+      border: none;
+      font-size: 1.5em;
+      cursor: pointer;
+    }
+    .favoritado {
+      color: gold;
+    }
+    .tab {
+      display: none;
+    }
+    .tab.active {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <h1>Lista de Anúncios</h1>
+  
+  <div class="nav">
+    <a href="formulario.html">➕ Novo Anúncio</a>
+    <a href="#" class="active" onclick="mostrarTab('todos')">Todos</a>
+    <a href="#" onclick="mostrarTab('favoritos')">Favoritos</a>
+  </div>
+
+  <div id="todos" class="tab active">
+    <div id="listaAnuncios"></div>
+  </div>
+
+  <div id="favoritos" class="tab">
+    <div id="listaFavoritos"></div>
+  </div>
+
+  <script>
+    // Carrega os anúncios e favoritos
+    const anuncios = JSON.parse(localStorage.getItem('anuncios')) || [];
+    let favoritos = JSON.parse(localStorage.getItem('favoritos')) || [];
+
+    // Mostra os anúncios normais
+    function carregarAnuncios() {
+      const container = document.getElementById('listaAnuncios');
+      container.innerHTML = '';
+
+      if (anuncios.length === 0) {
+        container.innerHTML = '<p>Nenhum anúncio publicado ainda.</p>';
+        return;
+      }
+
+      anuncios.forEach((anuncio, index) => {
+        if (anuncio.status !== 'publicado') return;
+
+        const isFavorito = favoritos.some(f => f.id === anuncio.id);
+        
+        const div = document.createElement('div');
+        div.className = 'anuncio' + (anuncio.destaque ? ' destaque' : '');
+        div.innerHTML = `
+          <h2>${anuncio.titulo}</h2>
+          <div class="categoria">${anuncio.categoria} > ${anuncio.subcategoria}</div>
+          <p>${anuncio.descricao}</p>
+          <small>Publicado em: ${new Date(anuncio.dataPublicacao).toLocaleDateString()}</small>
+          <button class="favorito-btn ${isFavorito ? 'favoritado' : ''}" onclick="toggleFavorito(${index})">★</button>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    // Mostra os favoritos
+    function carregarFavoritos() {
+      const container = document.getElementById('listaFavoritos');
+      container.innerHTML = '';
+
+      if (favoritos.length === 0) {
+        container.innerHTML = '<p>Nenhum anúncio favoritado ainda.</p>';
+        return;
+      }
+
+      favoritos.forEach(anuncio => {
+        const div = document.createElement('div');
+        div.className = 'anuncio' + (anuncio.destaque ? ' destaque' : '');
+        div.innerHTML = `
+          <h2>${anuncio.titulo}</h2>
+          <div class="categoria">${anuncio.categoria} > ${anuncio.subcategoria}</div>
+          <p>${anuncio.descricao}</p>
+          <small>Publicado em: ${new Date(anuncio.dataPublicacao).toLocaleDateString()}</small>
+          <button class="favorito-btn favoritado" onclick="removerFavorito(${anuncio.id})">★</button>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    // Alterna entre tabs
+    function mostrarTab(tabId) {
+      document.querySelectorAll('.tab').forEach(tab => {
+        tab.classList.remove('active');
+      });
+      document.querySelectorAll('.nav a').forEach(a => {
+        a.classList.remove('active');
+      });
+      
+      document.getElementById(tabId).classList.add('active');
+      document.querySelector(`.nav a[onclick="mostrarTab('${tabId}')"]`).classList.add('active');
+      
+      if (tabId === 'favoritos') {
+        carregarFavoritos();
+      }
+    }
+
+    // Adiciona/remove favoritos
+    function toggleFavorito(index) {
+      const anuncio = anuncios[index];
+      
+      const favoritoIndex = favoritos.findIndex(f => f.id === anuncio.id);
+      
+      if (favoritoIndex === -1) {
+        // Adiciona aos favoritos
+        favoritos.push(anuncio);
+      } else {
+        // Remove dos favoritos
+        favoritos.splice(favoritoIndex, 1);
+      }
+      
+      localStorage.setItem('favoritos', JSON.stringify(favoritos));
+      carregarAnuncios();
+      
+      if (document.getElementById('favoritos').classList.contains('active')) {
+        carregarFavoritos();
+      }
+    }
+
+    // Remove favorito diretamente da lista de favoritos
+    function removerFavorito(id) {
+      favoritos = favoritos.filter(f => f.id !== id);
+      localStorage.setItem('favoritos', JSON.stringify(favoritos));
+      carregarFavoritos();
+      carregarAnuncios();
+    }
+
+    // Inicializa
+    carregarAnuncios();
+  </script>
+</body>
+</html>

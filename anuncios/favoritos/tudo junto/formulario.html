@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Formulário de Anúncio</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background-color: #f0f0f0;
+    }
+    form {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      max-width: 500px;
+      margin: auto;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    input, textarea, select {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    label {
+      font-weight: bold;
+    }
+    button {
+      padding: 10px 15px;
+      border: none;
+      background: #4CAF50;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .link {
+      text-align: center;
+      margin-top: 20px;
+    }
+    .link a {
+      text-decoration: none;
+      color: #0077cc;
+    }
+  </style>
+</head>
+<body>
+  <form id="formularioAnuncio">
+    <h2>Publicar Anúncio</h2>
+
+    <label for="categoria">Categoria:</label>
+    <select id="categoria" required>
+      <option value="">Selecione...</option>
+      <option value="Imóveis">Imóveis</option>
+      <option value="Empregos">Empregos</option>
+      <option value="Serviços">Serviços</option>
+    </select>
+
+    <label for="subcategoria">Subcategoria:</label>
+    <input type="text" id="subcategoria" required>
+
+    <label for="titulo">Título:</label>
+    <input type="text" id="titulo" required>
+
+    <label for="descricao">Descrição:</label>
+    <textarea id="descricao" rows="4" required></textarea>
+
+    <label>
+      <input type="checkbox" id="destaque"> Destaque
+    </label>
+
+    <br><br>
+
+    <button type="submit">Publicar Anúncio</button>
+
+    <div class="link">
+      <a href="lista.html">📋 Ver Anúncios Publicados</a>
+    </div>
+  </form>
+
+  <script>
+    document.getElementById('formularioAnuncio').addEventListener('submit', function(event) {
+      event.preventDefault();
+
+      const categoria = document.getElementById('categoria').value;
+      const subcategoria = document.getElementById('subcategoria').value;
+      const titulo = document.getElementById('titulo').value;
+      const descricao = document.getElementById('descricao').value;
+      const destaque = document.getElementById('destaque').checked;
+
+      const anuncio = {
+        categoria,
+        subcategoria,
+        titulo,
+        descricao,
+        destaque,
+        status: 'publicado',
+        dataPublicacao: new Date().toISOString()
+      };
+
+      const anuncios = JSON.parse(localStorage.getItem('anuncios')) || [];
+      anuncios.push(anuncio);
+      localStorage.setItem('anuncios', JSON.stringify(anuncios));
+
+      window.location.href = 'lista.html'; // Redireciona para lista de anúncios
+    });
+  </script>
+</body>
+</html>
